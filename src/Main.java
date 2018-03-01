@@ -10,7 +10,7 @@ public class Main{
 		frame.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(null);
+		// frame.setLayout(null);
 		SolutionPanel sp = new SolutionPanel(bagOfWordsHashMap);
 		frame.add(sp);
 		frame.pack();

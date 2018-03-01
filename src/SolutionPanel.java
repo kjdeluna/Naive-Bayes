@@ -10,7 +10,8 @@ import javax.swing.JTable;
 import java.awt.Graphics;
 import javax.swing.JViewport;
 import javax.swing.JLabel;
-
+import java.awt.BorderLayout;
+import javax.swing.table.DefaultTableModel;
 public class SolutionPanel extends JPanel{
 	private JButton showDirectoryChooserButton;
 	private JFileChooser chooser;
@@ -18,25 +19,42 @@ public class SolutionPanel extends JPanel{
 	private String chooserTitle = "Open Directory";
 	private JScrollPane tableScrollPane;
 	private JTable table;
-	private JLabel totalWords;
+	private JLabel totalWordsLabel;
 	private JLabel dictSize;
 	public SolutionPanel(BagOfWords bagOfWords){
 		// Panel
 		this.bagOfWords = bagOfWords;
-		this.totalWords = new JLabel();
-		this.dictSize = new JLabel();
-		this.add(totalWords);
-		this.add(dictSize);
-		this.setLayout(null);
-		this.setPreferredSize(new Dimension(Main.WIDTH, Main.HEIGHT));
-		this.setBounds(0,0,Main.WIDTH, Main.HEIGHT);
+		this.setLayout(new BorderLayout());
+		// this.totalWords = new JLabel();
+		// this.dictSize = new JLabel();
+		// this.add(totalWords);
+		// this.add(dictSize);
+		JPanel leftPanel = new JPanel(new BorderLayout());
+		JPanel rightPanel = new JPanel(new BorderLayout());
 		// Show Directory Button
 		this.showDirectoryChooserButton = new JButton("Open Directory");
 		this.showDirectoryChooserButton.setFocusable(false);
-		this.showDirectoryChooserButton.setBounds(Main.WIDTH - 150, Main.HEIGHT-30, 150, 30);
+		String[] columnNames = {
+			"Word",
+			"Frequency" 
+		};
+		// this.table = new JTable(tableData,columnNames);
+		// Repopulate data
 		// Add to Panel
-		this.add(this.showDirectoryChooserButton);
+		Object[][] data = new Object[0][0];
+		DefaultTableModel model = new DefaultTableModel(data, columnNames);
+		this.totalWordsLabel = new JLabel("Total Words: 0");
+		leftPanel.add(totalWordsLabel, BorderLayout.SOUTH);
+		leftPanel.add(this.showDirectoryChooserButton, BorderLayout.NORTH);
+		// leftPanel.add(this.table, BorderLayout.CENTER);
 		// Button Action Listener
+		Object[][] rowData = new Object[0][0];
+		this.table = new JTable(model);
+		this.tableScrollPane = new JScrollPane(this.table);
+		this.tableScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+		leftPanel.add(tableScrollPane, BorderLayout.WEST);
+		this.add(leftPanel);	
+		
 		this.showDirectoryChooserButton.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 			    chooser = new JFileChooser(); 
@@ -60,36 +78,28 @@ public class SolutionPanel extends JPanel{
 		});
 	}
 	private void convertToTable(){
-		// Remove JLabels
-		this.remove(totalWords);
-		this.remove(dictSize);
-		totalWords = new JLabel("Total Words: " + Integer.toString(this.bagOfWords.getWordCount()));
-		totalWords.setBounds(0,0,300,30);
-		dictSize = new JLabel("Dict Size: " + Integer.toString(this.bagOfWords.getDict().size()));
-		dictSize.setBounds(0, 30, 300, 30);
-		this.add(totalWords);
-		this.add(dictSize);
-		String[] columnNames = {
-			"Word",
-			"Frequency" 
-		};
+		DefaultTableModel tableModel = (DefaultTableModel) this.table.getModel();
+		tableModel.setRowCount(0);
+ 
+		totalWordsLabel.setText("Total Words: " + Integer.toString(this.bagOfWords.getWordCount()));
+		// dictSize = new JLabel("Dict Size: " + Integer.toString(this.bagOfWords.getDict().size()));
+		// dictSize.setBounds(0, 30, 300, 30);
+		// this.add(totalWords);
+		// this.add(dictSize);
 		// Repopulate data
-		Object[][] tableData = new Object[this.bagOfWords.getDict().size()][2];
-		int index = 0;
 		// Put the data to table
 		for(String key : this.bagOfWords.getDict().keySet()){
-			tableData[index][0] = key;
-			tableData[index][1] = this.bagOfWords.getDict().get(key);
-			index++;
-			this.table = new JTable(tableData,columnNames);
-			this.tableScrollPane = new JScrollPane(this.table);
-			this.tableScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
-			this.tableScrollPane.setBounds(50, 100, 200, 200);
-			this.add(tableScrollPane);
-			// Ask JPanel to repaint since data has changed
-			this.repaint();
-
+			String[] data = new String[2];
+			data[0] = key;
+			System.out.println(data[0]);
+			data[1] = Integer.toString(this.bagOfWords.getDict().get(key));
+			tableModel.addRow(data);
 		}
+		this.table.setModel(tableModel);
+		tableModel.fireTableDataChanged();
+			// Ask JPanel to repaint since data has changed
+		this.repaint();
+
 	}
 
 	public void paintComponent(Graphics g){
