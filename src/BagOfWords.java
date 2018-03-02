@@ -60,6 +60,10 @@ public class BagOfWords{
 		return this.dict;
 	}
 
+	public int getDictSize(){
+		return this.dict.size();
+	}
+
 	public void resetAll(){
 		// To clear the whole contents
 		this.dict.clear();

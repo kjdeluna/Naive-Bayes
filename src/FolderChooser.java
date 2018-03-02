@@ -10,12 +10,14 @@ public class FolderChooser extends JButton implements ActionListener{
     private BagOfWords bagOfWords;
     private JTable table;
     private JLabel label;
-    public FolderChooser(String text, BagOfWords bagOfWords, JTable table, JLabel label){
+    private SolutionPanel sp;
+    public FolderChooser(String text, BagOfWords bagOfWords, JTable table, JLabel label, SolutionPanel sp){
         this.setText(text);
         this.bagOfWords = bagOfWords;
         this.table = table;
         this.label = label;
         this.addActionListener(this);
+        this.sp = sp;
     }
     // @Override
     public void actionPerformed(ActionEvent e){
@@ -36,6 +38,7 @@ public class FolderChooser extends JButton implements ActionListener{
                 }
             }
             convertToTable();
+            sp.updateDictSize();
         }
 
 	private void convertToTable(){
@@ -52,7 +55,6 @@ public class FolderChooser extends JButton implements ActionListener{
 		}
 		this.table.setModel(tableModel);
 		tableModel.fireTableDataChanged();
-
 	}
 }
 
