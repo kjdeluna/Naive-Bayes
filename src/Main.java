@@ -16,7 +16,6 @@ public class Main{
 		frame.setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// frame.setLayout(null);
 		SolutionPanel sp = new SolutionPanel(ham, spam);
 		frame.add(sp);
 		frame.pack();
