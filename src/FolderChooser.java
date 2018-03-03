@@ -8,7 +8,9 @@ public class FolderChooser extends JButton{
     private JFileChooser folderChooser;
     public FolderChooser(String category){
         this.category = category;
+        // Initialize button
         this.setText("Select " + this.category + " Folder");
+        this.setFocusable(false);
         // Initialize folderChooser
         this.folderChooser = new JFileChooser();
         this.folderChooser.setCurrentDirectory(new File("."));
