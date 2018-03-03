@@ -56,6 +56,8 @@ public class BagOfWordsPanel extends JPanel{
                         System.out.println(folderChooserButton.getAbsolutePath()+ "/" + child.getName());
                     }
                     convertToTable();
+                    SolutionPanel.updateTotalWords();
+                    SolutionPanel.updateDictionarySize();
                 }
             }
         });

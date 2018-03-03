@@ -1,6 +1,9 @@
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -8,17 +11,25 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.table.DefaultTableModel;
+import java.util.HashMap;
 
 public class SolutionPanel extends JPanel{
+	public static int totalWordsCount = 0;
+	public static int dictionarySize = 0;
+	private static BagOfWords ham;
+	private static BagOfWords spam;
 	private BagOfWordsPanel hamPanel;
 	private BagOfWordsPanel spamPanel;
-	private JLabel dictionarySizeLabel;
-	private JLabel totalWordsLabel;
+	private static JLabel dictionarySizeLabel;
+	private static JLabel totalWordsLabel;
 	private FolderChooser classifyFolderChooser;
 	private JButton filterButton;
 	private JTable outputTable;
 	private JScrollPane outputTableScrollPane;
 	public SolutionPanel(BagOfWords ham, BagOfWords spam){
+		// Initializing properties
+		this.ham = ham;
+		this.spam = spam;
 		// Setting the panel
 		this.setLayout(new BorderLayout());
 		this.setPreferredSize(new Dimension(Main.WIDTH, Main.HEIGHT));
@@ -57,12 +68,33 @@ public class SolutionPanel extends JPanel{
 			JPanel buttonWrapper = new JPanel(new GridLayout(1, 2));
 			buttonWrapper.add(classifyFolderChooser);
 			buttonWrapper.add(filterButton);
-			// 
+			// Add Folder Chooser Button Action Listener
 		rightPanel.add(buttonWrapper, BorderLayout.NORTH);
 		rightPanel.add(outputTableScrollPane, BorderLayout.CENTER);
 		rightPanel.add(labelWrapper, BorderLayout.SOUTH);
 		this.add(hamPanel, BorderLayout.WEST);
 		this.add(spamPanel, BorderLayout.CENTER);
 		this.add(rightPanel, BorderLayout.EAST);
+	}
+
+	public static void updateTotalWords(){
+		totalWordsCount = ham.getWordCount() + spam.getWordCount();
+		totalWordsLabel.setText("Total Words: " + Integer.toString(totalWordsCount));
+	}
+	public static void updateDictionarySize(){
+		HashMap<String, Integer> tempHam = ham.getDict();
+		HashMap<String, Integer> tempSpam = spam.getDict();
+		// Initialize the count to the size of ham
+		int count = tempHam.keySet().size();
+		// Now, we do not care for the ham keys
+		// Check the unique keys in spam
+		for(String key : tempSpam.keySet()){
+			if(!tempHam.containsKey(key)) count++;
+		}
+		dictionarySize = count;
+		dictionarySizeLabel.setText("Dictionary Size: " + Integer.toString(dictionarySize));
+			// The following code is not correct for the reason that it does not consider intersected keys
+		// dictionarySize = ham.getDict().keySet().size() + spam.getDict().keySet().size();
+		// dictionarySizeLabel.setText("Dictionary Size: " + Integer.toString(dictionarySize));
 	}
 }
