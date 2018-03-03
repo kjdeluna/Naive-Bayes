@@ -1,18 +1,17 @@
-import javax.swing.JPanel;
-import javax.swing.JButton;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Dimension;
 import javax.swing.JFileChooser;
-import java.io.File;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import java.awt.Graphics;
 import javax.swing.JViewport;
-import javax.swing.JLabel;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import javax.swing.table.DefaultTableModel;
+import java.io.File;
+
 public class BagOfWordsPanel extends JPanel{
     private String category;
     private BagOfWords bagOfWords;

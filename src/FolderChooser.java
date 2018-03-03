@@ -1,11 +1,7 @@
-import javax.swing.JFileChooser;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-import java.io.File;
-import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import java.io.File;
+
 public class FolderChooser extends JButton{
     private BagOfWords bagOfWords;
     private String category;
@@ -22,15 +18,15 @@ public class FolderChooser extends JButton{
     }
 
     public File getAbsolutePath(){
+        // Returns the absolute path of the folder selected
         return this.folderChooser.getSelectedFile();
     }
     public File[] openFileChooser(){
+        // Opens the file chooser then returns an array of files
         if(this.folderChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
             return this.folderChooser.getSelectedFile().listFiles();
         }
         return null;
     }
-
-
 }
 
