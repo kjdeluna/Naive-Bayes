@@ -16,8 +16,8 @@ import java.util.HashMap;
 public class SolutionPanel extends JPanel{
 	public static int totalWordsCount = 0;
 	public static int dictionarySize = 0;
-	private static BagOfWords ham;
-	private static BagOfWords spam;
+	public static BagOfWords ham;
+	public static BagOfWords spam;
 	private BagOfWordsPanel hamPanel;
 	private BagOfWordsPanel spamPanel;
 	private static JLabel dictionarySizeLabel;
@@ -75,6 +75,12 @@ public class SolutionPanel extends JPanel{
 		this.add(hamPanel, BorderLayout.WEST);
 		this.add(spamPanel, BorderLayout.CENTER);
 		this.add(rightPanel, BorderLayout.EAST);
+		this.filterButton.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				ProbabilitySolver ps = new ProbabilitySolver();
+			}
+		});
 	}
 
 	public static void updateTotalWords(){
