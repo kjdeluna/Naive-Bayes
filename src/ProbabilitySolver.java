@@ -7,7 +7,7 @@ import java.math.RoundingMode;
 public class ProbabilitySolver{
     private BigDecimal probSpam;
     private BigDecimal probHam;
-    private String filename = "019";
+    private String filename = "004";
     public ProbabilitySolver(){
         this.probSpam = getProbSpam();
         this.probHam = getProbHam();
@@ -32,17 +32,30 @@ public class ProbabilitySolver{
         );
     }
     private BigDecimal getProbWordGivenSpam(String word){
-        if(SolutionPanel.spam.getDict().get(word) == null){
+        if(SolutionPanel.spam.getDict().containsKey(word) && !SolutionPanel.ham.getDict().containsKey(word)){
             // System.out.println("Word: " + word);
             return new BigDecimal("1.0");
         }
-        return new BigDecimal(Double.toString((double) SolutionPanel.spam.getDict().get(word) / (double) SolutionPanel.spam.getWordCount()));
+        else if(!SolutionPanel.spam.getDict().containsKey(word)){
+            return new BigDecimal("0.0");
+        }
+        System.out.println(word + "fsfs");
+        // return new BigDecimal(Double.toString((double) SolutionPanel.spam.getDict().get(word) / (double) SolutionPanel.spam.getWordCount()));
+        BigDecimal spamWord = new BigDecimal(Integer.toString(SolutionPanel.spam.getDict().get(word)));
+        BigDecimal spamWordCount = new BigDecimal(Integer.toString(SolutionPanel.spam.getWordCount()));
+        return spamWord.divide(spamWordCount, 300, RoundingMode.HALF_EVEN);
     }
     private BigDecimal computeProbWordGivenHam(String word){
-        if(SolutionPanel.ham.getDict().get(word) == null){
+        if(SolutionPanel.ham.getDict().containsKey(word) && !SolutionPanel.spam.getDict().containsKey(word)){
+            return new BigDecimal("0.0");
+        }
+        else if(!SolutionPanel.ham.getDict().containsKey(word)){
             return new BigDecimal("1.0");
         }
-        return new BigDecimal(Double.toString((double) SolutionPanel.ham.getDict().get(word) / (double) SolutionPanel.ham.getWordCount()));
+        BigDecimal spamWord = new BigDecimal(Integer.toString(SolutionPanel.ham.getDict().get(word)));
+        BigDecimal spamWordCount = new BigDecimal(Integer.toString(SolutionPanel.ham.getWordCount()));
+        return spamWord.divide(spamWordCount, 300, RoundingMode.HALF_EVEN);
+        // return new BigDecimal(Double.toString((double) SolutionPanel.ham.getDict().get(word) / (double) SolutionPanel.ham.getWordCount()));
     }
 	private BigDecimal computeProbabilityMessageGivenSpam(){
 		String[] tokens;
@@ -55,14 +68,19 @@ public class ProbabilitySolver{
 			while((currentLine = br.readLine()) != null){
                 // System.out.println(currentLine);
 				tokens = currentLine.split("\\s");
+                System.out.println("henlo");
 				for(String token:tokens){
+                    if(token == null) continue;
                     // System.out.println(Arrays.toString(tokens));
 					// Lowercase all . Replace all non-alphanumeric characters
 					word = token.toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
+                    if (word.trim().length() > 0){
+                    // System.out.println(word);
                     // System.out.println("Probability: "+ getProbWordGivenSpam(word));
                     accumulator = accumulator.multiply(getProbWordGivenSpam(word));
                     // System.out.println("accu" + accumulator.toString());
                     // System.out.println(SolutionPanel.spam.getDict().get(word));
+                    }
 				}
 			}
 		} catch (IOException e){
@@ -82,11 +100,14 @@ public class ProbabilitySolver{
                 // System.out.println(currentLine);
 				tokens = currentLine.split("\\s");
 				for(String token:tokens){
+                    if(token == null) continue;
 					// Lowercase all . Replace all non-alphanumeric characters
 					word = token.toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
+                    if(word.trim().length() > 0){
+                    System.out.println(word);
                     accumulator = accumulator.multiply(computeProbWordGivenHam(word));
-                    // System.out.println("accu" + accumulator.toString());
 				}
+                }
 			}
 		} catch (IOException e){
 			e.printStackTrace();
