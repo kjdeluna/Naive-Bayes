@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.math.RoundingMode;
 public class ProbabilitySolver{
+    private String path;
     private String filename;
     public ProbabilitySolver(){
         // System.out.println(getProbSpam().toString());
@@ -13,8 +14,8 @@ public class ProbabilitySolver{
         // System.out.println(computeProbabilityMessageGivenHam().toString());
         // System.out.println(computeProbabilitySpamGivenMessage().toString());
     }
-    public void setFolder(String filename){
-        System.out.println(filename);
+    public void setFolder(String path, String filename){
+        this.path = path;
         this.filename = filename;
     }
     public String[] getOutput(){
@@ -65,17 +66,30 @@ public class ProbabilitySolver{
 		String word;
         BigDecimal accumulator = new BigDecimal("1.0");
 		try{
-			FileReader fr = new FileReader(this.filename);
+			FileReader fr = new FileReader(this.path + "/" + this.filename);
 			BufferedReader br = new BufferedReader(fr);
 			String currentLine;
 			while((currentLine = br.readLine()) != null){
+                // System.out.println(currentLine);
 				tokens = currentLine.split("\\s");
+                System.out.println("henlo");
 				for(String token:tokens){
+                    if(token == null) continue;
+                    // System.out.println(Arrays.toString(tokens));
+					// Lowercase all . Replace all non-alphanumeric characters
 					word = token.toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
+                    if (word.trim().length() > 0){
+                    // System.out.println(word);
+                    // System.out.println("Probability: "+ getProbWordGivenSpam(word));
                     accumulator = accumulator.multiply(getProbWordGivenSpam(word));
-                }
+                    // System.out.println("accu" + accumulator.toString());
+                    // System.out.println(SolutionPanel.spam.getDict().get(word));
+                    }
+				}
 			}
-		} catch (IOException e){}
+		} catch (IOException e){
+			// e.printStackTrace();
+		}
         return accumulator;
 	}
     private BigDecimal computeProbabilityMessageGivenHam(){
@@ -83,15 +97,20 @@ public class ProbabilitySolver{
 		String word;
         BigDecimal accumulator = new BigDecimal("1.0");
 		try{
-			FileReader fr = new FileReader(this.filename);
+			FileReader fr = new FileReader(this.path + "/" + this.filename);
 			BufferedReader br = new BufferedReader(fr);
 			String currentLine;
 			while((currentLine = br.readLine()) != null){
+                // System.out.println(currentLine);
 				tokens = currentLine.split("\\s");
 				for(String token:tokens){
+                    if(token == null) continue;
 					// Lowercase all . Replace all non-alphanumeric characters
 					word = token.toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
+                    if(word.trim().length() > 0){
+                    System.out.println(word);
                     accumulator = accumulator.multiply(computeProbWordGivenHam(word));
+				}
                 }
 			}
 		} catch (IOException e){

@@ -81,12 +81,12 @@ public class SolutionPanel extends JPanel{
 			public void actionPerformed(ActionEvent e){
 				System.out.println(directoryListing);
 				ProbabilitySolver ps = new ProbabilitySolver();
-				// for(File child : directoryListing){
-					ps.setFolder(classifyFolderChooser.getAbsolutePath() + "/" + "020");	
-					ps.getOutput();
-					// ps.setFolder(classifyFolderChooser.getAbsolutePath() + "/" + child.getName());
+				for(File child : directoryListing){
+					// ps.setFolder(classifyFolderChooser.getAbsolutePath() + "/" + "002");	
+					// ps.getOutput();
+					ps.setFolder(classifyFolderChooser.getAbsolutePath().toString(), child.getName());
 					addToTable(ps.getOutput());
-				// }
+				}
 			}
 		});
 		classifyFolderChooser.addActionListener(new ActionListener(){
