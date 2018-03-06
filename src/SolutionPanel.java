@@ -79,11 +79,10 @@ public class SolutionPanel extends JPanel{
 		this.filterButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				System.out.println(directoryListing);
+				DefaultTableModel tableModel = (DefaultTableModel) outputTable.getModel();
+				tableModel.setRowCount(0);
 				ProbabilitySolver ps = new ProbabilitySolver();
 				for(File child : directoryListing){
-					// ps.setFolder(classifyFolderChooser.getAbsolutePath() + "/" + "002");	
-					// ps.getOutput();
 					ps.setFolder(classifyFolderChooser.getAbsolutePath().toString(), child.getName());
 					addToTable(ps.getOutput());
 				}
@@ -92,6 +91,7 @@ public class SolutionPanel extends JPanel{
 		classifyFolderChooser.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
+				// Store the array of files inside the folder to directoryListing
 				directoryListing = classifyFolderChooser.openFileChooser();
 			}
 		});

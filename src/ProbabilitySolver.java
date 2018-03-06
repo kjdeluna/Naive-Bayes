@@ -7,25 +7,25 @@ import java.math.RoundingMode;
 public class ProbabilitySolver{
     private String path;
     private String filename;
-    public ProbabilitySolver(){
-        // System.out.println(getProbSpam().toString());
-        // System.out.println(getProbHam().toString());
-        // System.out.println(computeProbabilityMessageGivenSpam().toString());
-        // System.out.println(computeProbabilityMessageGivenHam().toString());
-        // System.out.println(computeProbabilitySpamGivenMessage().toString());
-    }
+    public ProbabilitySolver(){}
     public void setFolder(String path, String filename){
         this.path = path;
         this.filename = filename;
     }
     public String[] getOutput(){
-        BigDecimal computedProbability = computeProbabilitySpamGivenMessage();
-        System.out.println(computedProbability.toString());
-        String classify = computedProbability.compareTo(new BigDecimal("0.50")) >= 0 ? "SPAM" : "HAM"; 
         String[] output = new String[3];
+        String classify;
+        BigDecimal computedProbability = computeProbabilitySpamGivenMessage();
+        if(computedProbability == null){
+            // If it encountered Arithmetic Exception
+            output[2] = "Cannot be processed";
+            output[1] = "undefined";
+        } else{
+            classify = computedProbability.compareTo(new BigDecimal("0.50")) >= 0 ? "SPAM" : "HAM"; 
+            output[2] = computedProbability.toString();
+            output[1] = classify;
+        }
         output[0] = filename;
-        output[1] = classify;
-        output[2] = computedProbability.toString();
         return output;
     }
 
@@ -70,20 +70,12 @@ public class ProbabilitySolver{
 			BufferedReader br = new BufferedReader(fr);
 			String currentLine;
 			while((currentLine = br.readLine()) != null){
-                // System.out.println(currentLine);
 				tokens = currentLine.split("\\s");
-                System.out.println("henlo");
 				for(String token:tokens){
-                    if(token == null) continue;
-                    // System.out.println(Arrays.toString(tokens));
 					// Lowercase all . Replace all non-alphanumeric characters
 					word = token.toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
-                    if (word.trim().length() > 0){
-                    // System.out.println(word);
-                    // System.out.println("Probability: "+ getProbWordGivenSpam(word));
-                    accumulator = accumulator.multiply(getProbWordGivenSpam(word));
-                    // System.out.println("accu" + accumulator.toString());
-                    // System.out.println(SolutionPanel.spam.getDict().get(word));
+                    if(word.trim().length() > 0){
+                        accumulator = accumulator.multiply(getProbWordGivenSpam(word));
                     }
 				}
 			}
@@ -101,16 +93,13 @@ public class ProbabilitySolver{
 			BufferedReader br = new BufferedReader(fr);
 			String currentLine;
 			while((currentLine = br.readLine()) != null){
-                // System.out.println(currentLine);
 				tokens = currentLine.split("\\s");
 				for(String token:tokens){
-                    if(token == null) continue;
 					// Lowercase all . Replace all non-alphanumeric characters
 					word = token.toLowerCase().replaceAll("[^a-zA-Z0-9]", "");
                     if(word.trim().length() > 0){
-                    System.out.println(word);
-                    accumulator = accumulator.multiply(computeProbWordGivenHam(word));
-				}
+                        accumulator = accumulator.multiply(computeProbWordGivenHam(word));
+			    	}
                 }
 			}
 		} catch (IOException e){
@@ -119,9 +108,13 @@ public class ProbabilitySolver{
         return accumulator;
     }
     private BigDecimal computeProbabilitySpamGivenMessage(){
-        return 
-            (computeProbabilityMessageGivenSpam().multiply(getProbSpam()))
-            .divide((computeProbabilityMessageGivenSpam().multiply(getProbSpam())
-                    .add(computeProbabilityMessageGivenHam().multiply(getProbHam()))), 10, RoundingMode.HALF_EVEN);            
+        BigDecimal numerator = computeProbabilityMessageGivenSpam().multiply(getProbSpam());
+        BigDecimal denominator = computeProbabilityMessageGivenSpam().multiply(getProbSpam())
+                                .add(computeProbabilityMessageGivenHam().multiply(getProbHam()));
+        try{
+            return numerator.divide(denominator, 10, RoundingMode.HALF_EVEN);
+        } catch(ArithmeticException e){
+            return null;
+        }          
     }
 }
