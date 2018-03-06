@@ -18,6 +18,7 @@ public class SolutionPanel extends JPanel{
 	public static int dictionarySize = 0;
 	public static BagOfWords ham;
 	public static BagOfWords spam;
+	private static JLabel pathLabel;
 	private BagOfWordsPanel hamPanel;
 	private BagOfWordsPanel spamPanel;
 	private static JLabel dictionarySizeLabel;
@@ -41,6 +42,7 @@ public class SolutionPanel extends JPanel{
 			// Labels
         this.dictionarySizeLabel = new JLabel("Dictionary Size: 0");
         this.totalWordsLabel = new JLabel("Total Words: 0");
+		this.pathLabel = new JLabel("");
 			// Folder Chooser
 		this.classifyFolderChooser = new FolderChooser("Classify");
 			// Button
@@ -62,9 +64,10 @@ public class SolutionPanel extends JPanel{
 		JPanel rightPanel = new JPanel(new BorderLayout());
 		rightPanel.setPreferredSize(new Dimension(Main.WIDTH/3, 50));
 			// Dictionary Size and Total number of words
-			JPanel labelWrapper = new JPanel(new GridLayout(1, 2));
+			JPanel labelWrapper = new JPanel(new GridLayout(1, 3));
 			labelWrapper.add(dictionarySizeLabel);
 			labelWrapper.add(totalWordsLabel);
+			labelWrapper.add(pathLabel);
 			// Folder Chooser and Filter Button
 			JPanel buttonWrapper = new JPanel(new GridLayout(1, 2));
 			buttonWrapper.add(classifyFolderChooser);
@@ -93,6 +96,8 @@ public class SolutionPanel extends JPanel{
 			public void actionPerformed(ActionEvent e){
 				// Store the array of files inside the folder to directoryListing
 				directoryListing = classifyFolderChooser.openFileChooser();
+				pathLabel.setText(classifyFolderChooser.getAbsolutePath().toString());
+				pathLabel.setToolTipText(classifyFolderChooser.getAbsolutePath().toString());
 			}
 		});
 	}
