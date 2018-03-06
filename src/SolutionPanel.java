@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,7 +13,6 @@ import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.table.DefaultTableModel;
 import java.util.HashMap;
-
 public class SolutionPanel extends JPanel{
 	public static int totalWordsCount = 0;
 	public static int dictionarySize = 0;
@@ -26,6 +26,7 @@ public class SolutionPanel extends JPanel{
 	private JButton filterButton;
 	private JTable outputTable;
 	private JScrollPane outputTableScrollPane;
+	private File[] directoryListing;
 	public SolutionPanel(BagOfWords ham, BagOfWords spam){
 		// Initializing properties
 		this.ham = ham;
@@ -78,9 +79,32 @@ public class SolutionPanel extends JPanel{
 		this.filterButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
+				System.out.println(directoryListing);
 				ProbabilitySolver ps = new ProbabilitySolver();
+				// for(File child : directoryListing){
+					ps.setFolder(classifyFolderChooser.getAbsolutePath() + "/" + "020");	
+					ps.getOutput();
+					// ps.setFolder(classifyFolderChooser.getAbsolutePath() + "/" + child.getName());
+					addToTable(ps.getOutput());
+				// }
 			}
 		});
+		classifyFolderChooser.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				directoryListing = classifyFolderChooser.openFileChooser();
+			}
+		});
+	}
+
+	private void addToTable(String[] row){
+		DefaultTableModel tableModel = (DefaultTableModel) this.outputTable.getModel();
+            // Add a row in table model
+		tableModel.addRow(row);
+        // Update the model of the table
+		this.outputTable.setModel(tableModel);
+        // Force it to update
+		tableModel.fireTableDataChanged();
 	}
 
 	public static void updateTotalWords(){
