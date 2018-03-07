@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -82,13 +84,17 @@ public class SolutionPanel extends JPanel{
 		this.filterButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				DefaultTableModel tableModel = (DefaultTableModel) outputTable.getModel();
-				tableModel.setRowCount(0);
-				ProbabilitySolver ps = new ProbabilitySolver();
-				for(File child : directoryListing){
-					ps.setFolder(classifyFolderChooser.getAbsolutePath().toString(), child.getName());
-					addToTable(ps.getOutput());
-				}
+				try{
+					FileWriter output = new FileWriter("classify.txt");
+					DefaultTableModel tableModel = (DefaultTableModel) outputTable.getModel();
+					tableModel.setRowCount(0);
+					ProbabilitySolver ps = new ProbabilitySolver();
+					for(File child : directoryListing){
+						ps.setFolder(classifyFolderChooser.getAbsolutePath().toString(), child.getName());
+						addToTable(ps.getOutput(), output);
+					}
+					output.close();
+				} catch(IOException ie){}
 			}
 		});
 		classifyFolderChooser.addActionListener(new ActionListener(){
@@ -102,7 +108,7 @@ public class SolutionPanel extends JPanel{
 		});
 	}
 
-	private void addToTable(String[] row){
+	private void addToTable(String[] row, FileWriter output){
 		DefaultTableModel tableModel = (DefaultTableModel) this.outputTable.getModel();
             // Add a row in table model
 		tableModel.addRow(row);
@@ -110,6 +116,9 @@ public class SolutionPanel extends JPanel{
 		this.outputTable.setModel(tableModel);
         // Force it to update
 		tableModel.fireTableDataChanged();
+		try{
+			output.write(row[0] + " " + row[1] + " " + row[2] + "\n");
+		} catch(IOException e){}
 	}
 
 	public static void updateTotalWords(){
