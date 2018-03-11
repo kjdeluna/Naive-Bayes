@@ -48,12 +48,13 @@ public class BagOfWordsPanel extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e){
                 File[] directoryListing = folderChooserButton.openFileChooser();
+                bagOfWords.setFileCount(directoryListing.length);
                 if(directoryListing != null){
                     bagOfWords.resetAll();
                     for(File child : directoryListing){
                         // Get absolute path and loop its contents
                         bagOfWords.readFile(folderChooserButton.getAbsolutePath()+ "/" + child.getName());
-                        System.out.println(folderChooserButton.getAbsolutePath()+ "/" + child.getName());
+                        System.out.println("Loaded " + folderChooserButton.getAbsolutePath()+ "/" + child.getName());
                     }
                     convertToTable();
                     SolutionPanel.updateTotalWords();

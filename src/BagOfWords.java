@@ -8,13 +8,27 @@ import java.io.File;
 public class BagOfWords{
 	private HashMap<String, Integer> dict;
 	private int wordCount;
+	private int fileCount;
 	public BagOfWords(){
 		this.wordCount = 0;
-		this.dict = new HashMap<String, Integer>();
+		this.dict = new HashMap<String, Integer>(){
+			@Override
+			public Integer get(Object key){
+				if(!this.containsKey(key)) return 0;
+				else return super.get(key);
+			}
+		};
+		this.fileCount = 0;
 	}
 
 	public int getWordCount(){
 		return this.wordCount;
+	}
+	public int getFileCount(){
+		return this.fileCount;
+	}
+	public void setFileCount(int count){
+		this.fileCount = count; 	
 	}
 	public void readFile(String filename){
 		String[] tokens;
